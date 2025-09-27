@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-type Theme = 'default' | 'dark';
+type Theme = 'light' | 'dark';
 
 type ThemeProviderProps = {
   children: React.ReactNode;
@@ -16,7 +16,7 @@ type ThemeProviderState = {
 };
 
 const initialState: ThemeProviderState = {
-  theme: 'default',
+  theme: 'dark',
   setTheme: () => null,
 };
 
@@ -25,7 +25,7 @@ const ThemeProviderContext =
 
 export function ThemeProvider({
   children,
-  defaultTheme = 'default',
+  defaultTheme = 'dark',
   storageKey = '8bitmanager-theme',
   ...props
 }: ThemeProviderProps) {
@@ -38,12 +38,12 @@ export function ThemeProvider({
   React.useEffect(() => {
     const root = window.document.documentElement;
 
-    root.classList.remove('default', 'dark');
+    root.classList.remove('light', 'dark');
 
     if (theme === 'dark') {
       root.classList.add('dark');
     } else {
-      root.classList.add('default');
+      root.classList.add('light');
     }
   }, [theme]);
 

@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "494d7309-e19f-46d3-954a-16fae60519df",
+  "id": "cb011fc0-de7a-4ae8-83b5-61e86dd86665",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "platforms": {
@@ -18,7 +18,7 @@
           "name": "company",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "name": {
@@ -27,9 +27,29 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "releasedGames": {
+          "name": "releasedGames",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "platforms_slug_unique": {
+          "name": "platforms_slug_unique",
+          "columns": ["slug"],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},

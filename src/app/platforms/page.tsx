@@ -1,27 +1,27 @@
-import { Button } from '@/components/ui/button';
-import { db } from '@/db';
-import { platformsTable } from '@/db/schema';
+'use client';
 
-export default function PlatformsPage() {
+import { Platform } from '@/db/services/platforms';
+import Link from 'next/link';
+import { useApi } from '@/hooks/useApi';
+
+export default function Page() {
+  const { data: platforms, loading, error } = useApi<Platform[]>('/platforms');
+
+  if (loading) {
+    return <div>Loading platforms...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div>
-      <form
-        action={async () => {
-          'use server';
-
-          const mastersystem: typeof platformsTable.$inferInsert = {
-            name: 'Master System',
-            company: 'Sega',
-          };
-
-          await db.insert(platformsTable).values(mastersystem);
-
-          const platforms = await db.select().from(platformsTable);
-          console.log(platforms);
-        }}
-      >
-        <Button type="submit">Add Platform</Button>
-      </form>
+      {platforms?.map(platform => (
+        <div className="flex flex-col gap-2" key={platform.id}>
+          <Link href={`/platforms/${platform.slug}`}>{platform.name}</Link>
+        </div>
+      ))}
     </div>
   );
 }
