@@ -1,17 +1,57 @@
-import { NextResponse } from 'next/server';
-
-export function createErrorResponse(
-  error: unknown,
-  message: string = 'An error occurred',
-  status: number = 500,
-  context?: string
+export async function fetchRequest(
+  url: string,
+  headers?: Record<string, string>
 ) {
-  const logMessage = context ? `Error ${context}:` : 'API Error:';
-  console.error(logMessage, error);
+  try {
+    const apiUrl = url.startsWith('/api') ? url : `/api${url}`;
 
-  return NextResponse.json({ error: message }, { status });
+    const config: RequestInit = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+    };
+
+    const response = await fetch(apiUrl, config);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Fetch error:', error);
+    throw error;
+  }
 }
 
-export function createNotFoundResponse(message: string = 'Record not found') {
-  return NextResponse.json({ error: message }, { status: 404 });
+export async function createRequest(
+  url: string,
+  body: unknown,
+  headers?: Record<string, string>
+) {
+  try {
+    const apiUrl = url.startsWith('/api') ? url : `/api${url}`;
+
+    const config: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+      body: JSON.stringify(body),
+    };
+
+    const response = await fetch(apiUrl, config);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Post error:', error);
+    throw error;
+  }
 }

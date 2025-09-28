@@ -39,7 +39,7 @@ export default function RootLayout({
             <AppSidebar />
             <SidebarInset>
               <SidebarTrigger />
-              {children}
+              <div className="p-4 flex flex-col gap-4">{children}</div>
             </SidebarInset>
           </SidebarProvider>
         </ThemeProvider>

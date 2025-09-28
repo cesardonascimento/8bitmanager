@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { PlatformsService } from '@/db/services/platforms';
-import { createErrorResponse, createNotFoundResponse } from '@/lib/api';
 
 interface RouteParams {
   params: {
@@ -13,11 +12,13 @@ export async function GET(_request: Request, { params }: RouteParams) {
     const platform = await PlatformsService.getBySlug(params.slug);
 
     if (!platform) {
-      return createNotFoundResponse('Platform not found');
+      return NextResponse.json({ error: 'Record not found' }, { status: 404 });
     }
 
     return NextResponse.json(platform);
   } catch (error) {
-    return createErrorResponse(error);
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
+
+export { GET as platformRoute };

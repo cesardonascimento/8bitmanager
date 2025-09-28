@@ -1,33 +1,44 @@
 'use client';
 
-import { Platform } from '@/db/services/platforms';
+import { fetchRequest } from '@/lib/api';
+import { mapToPlatform } from '@/mappers/platform.mapper';
+import { Platform } from '@/models/platform';
 import { useParams } from 'next/navigation';
-import { useApi } from '@/hooks/useApi';
+import { useEffect, useState } from 'react';
 
 export default function Page() {
   const { slug } = useParams();
-  const {
-    data: platform,
-    loading,
-    error,
-  } = useApi<Platform>(slug ? `/platforms/${slug}` : null);
+  const [platform, setPlatform] = useState<Platform | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchPlatform = async () => {
+      setLoading(true);
+      const data = await fetchRequest(`/platforms/${slug}`);
+      setPlatform(mapToPlatform(data));
+      setLoading(false);
+    };
+    fetchPlatform();
+  }, [slug]);
 
   if (loading) {
     return <div>Loading platform...</div>;
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (!platform) {
-    return <div>Platform not found</div>;
-  }
-
   return (
-    <div>
-      <h1>{platform.name}</h1>
-      <p>{platform.company}</p>
-    </div>
+    <>
+      {platform && (
+        <>
+          <h1>{platform.name}</h1>
+          <p>{platform.company}</p>
+
+          <div className="flex flex-col gap-2">
+            {platform.releasedGames?.map((game, index) => (
+              <div key={index}>{game}</div>
+            ))}
+          </div>
+        </>
+      )}
+    </>
   );
 }

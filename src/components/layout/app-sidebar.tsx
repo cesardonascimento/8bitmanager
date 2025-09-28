@@ -1,10 +1,6 @@
-'use client';
-
-import { useMemo } from 'react';
+import Link from 'next/link';
 import { Joystick, Gamepad2 } from 'lucide-react';
-import { useApi } from '@/hooks/useApi';
-import { Platform } from '@/db/services/platforms';
-
+import { PlatformSelectSchema } from '@/db/services/platforms';
 import {
   Sidebar,
   SidebarContent,
@@ -14,31 +10,29 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSkeleton,
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
+import { mapToPlatform } from '@/mappers/platform.mapper';
+import { PlatformsService } from '@/db/services/platforms';
 
-export function AppSidebar() {
-  const { data: platforms, loading } = useApi<Platform[]>('/platforms');
+export async function AppSidebar() {
+  const platforms = await PlatformsService.getAll();
+  const mappedPlatforms = platforms.map(mapToPlatform);
 
-  const items = useMemo(
-    () => [
-      {
-        title: 'Platforms',
-        url: '/platforms',
-        icon: Joystick,
-        submenu:
-          platforms?.map(platform => ({
-            title: platform.name,
-            url: `/platforms/${platform.slug}`,
-            icon: Gamepad2,
-          })) || [],
-      },
-    ],
-    [platforms]
-  );
+  const items = [
+    {
+      title: 'Platforms',
+      url: '/platforms',
+      icon: Joystick,
+      submenu: mappedPlatforms.map(platform => ({
+        title: platform.name,
+        url: `/platforms/${platform.slug}`,
+        icon: Gamepad2,
+      })),
+    },
+  ];
 
   return (
     <Sidebar>
@@ -46,33 +40,31 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
-            {loading && <SidebarMenuSkeleton showIcon={true} />}
             <SidebarMenu>
-              {!loading &&
-                items.map(item => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <a href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </a>
-                    </SidebarMenuButton>
-                    {item.submenu && item.submenu.length > 0 && (
-                      <SidebarMenuSub>
-                        {item.submenu.map(subItem => (
-                          <SidebarMenuSubItem key={subItem.title}>
-                            <SidebarMenuSubButton asChild>
-                              <a href={subItem.url}>
-                                <subItem.icon />
-                                <span>{subItem.title}</span>
-                              </a>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    )}
-                  </SidebarMenuItem>
-                ))}
+              {items.map(item => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <Link href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                  {item.submenu && item.submenu.length > 0 && (
+                    <SidebarMenuSub>
+                      {item.submenu.map(subItem => (
+                        <SidebarMenuSubItem key={subItem.title}>
+                          <SidebarMenuSubButton asChild>
+                            <Link href={subItem.url}>
+                              <subItem.icon />
+                              <span>{subItem.title}</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  )}
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

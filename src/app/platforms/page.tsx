@@ -1,18 +1,28 @@
 'use client';
 
-import { Platform } from '@/db/services/platforms';
+import { fetchRequest } from '@/lib/api';
+import { Platform } from '@/models/platform';
 import Link from 'next/link';
-import { useApi } from '@/hooks/useApi';
+import { useEffect, useState } from 'react';
+import { mapToPlatform } from '@/mappers/platform.mapper';
 
 export default function Page() {
-  const { data: platforms, loading, error } = useApi<Platform[]>('/platforms');
+  const [platforms, setPlatforms] = useState<Platform[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchPlatforms = async () => {
+      setLoading(true);
+      const data = await fetchRequest('/platforms');
+      setPlatforms(data.map(mapToPlatform));
+      setLoading(false);
+    };
+
+    fetchPlatforms();
+  }, []);
 
   if (loading) {
     return <div>Loading platforms...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
   }
 
   return (
