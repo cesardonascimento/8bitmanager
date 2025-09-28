@@ -2,6 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import GamesTable from '@/components/platform/games-table';
 import { fetchRequest } from '@/lib/api';
 import { mapToPlatform } from '@/mappers/platform.mapper';
 import { Platform } from '@/models/platform';
@@ -25,20 +26,20 @@ export default function Page() {
     return <div>Loading platform...</div>;
   }
 
-  return (
-    <>
-      {platform && (
-        <>
-          <h1>{platform.name}</h1>
-          <p>{platform.company}</p>
+  if (!platform) {
+    return <div>Platform not found</div>;
+  }
 
-          <div className="flex flex-col gap-2">
-            {platform.releasedGames?.map((game, index) => (
-              <div key={index}>{game}</div>
-            ))}
-          </div>
-        </>
-      )}
-    </>
+  return (
+    <div className="space-y-4">
+      <div>
+        <h2 className="text-sm text-muted-foreground">{platform.company}</h2>
+        <h1 className="text-2xl font-bold">{platform.name}</h1>
+      </div>
+      <div className="flex gap-4">
+        <GamesTable games={platform.releasedGames} />
+        <GamesTable games={platform.ownedGames} />
+      </div>
+    </div>
   );
 }

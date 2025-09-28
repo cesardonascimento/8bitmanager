@@ -5,6 +5,9 @@ export const platformsTable = sqliteTable('platforms', {
   id: int().primaryKey({ autoIncrement: true }),
   company: text(),
   name: text().notNull(),
+  ownedGames: text()
+    .notNull()
+    .default(sql`'[]'`),
   releasedGames: text()
     .notNull()
     .default(sql`'[]'`),

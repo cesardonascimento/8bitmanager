@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Roboto, Roboto_Mono } from 'next/font/google';
 import { AppSidebar } from '@/components/layout/app-sidebar';
+import { ThemeSwitch } from '@/components/layout/theme-switch';
+import { Separator } from '@/components/ui/separator';
 import {
   SidebarProvider,
   SidebarTrigger,
@@ -9,13 +11,13 @@ import {
 import { ThemeProvider } from '@/providers/theme-provider';
 import './globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const roboto = Roboto({
+  variable: '--font-roboto',
   subsets: ['latin'],
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const robotoMono = Roboto_Mono({
+  variable: '--font-roboto-mono',
   subsets: ['latin'],
 });
 
@@ -31,14 +33,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${roboto.variable} ${robotoMono.variable} antialiased`}>
         <ThemeProvider defaultTheme="dark">
           <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
-              <SidebarTrigger />
+              <div className="p-4 flex justify-between items-center">
+                <SidebarTrigger />
+                <ThemeSwitch />
+              </div>
+              <Separator />
               <div className="p-4 flex flex-col gap-4">{children}</div>
             </SidebarInset>
           </SidebarProvider>

@@ -72,7 +72,7 @@ async function seed() {
     const megadrive: typeof platformsTable.$inferInsert = {
       company: 'Sega',
       name: 'Mega Drive',
-      releasedGames: JSON.stringify(megaDriveGames) as unknown as string[][],
+      releasedGames: JSON.stringify(megaDriveGames),
       slug: 'mega-drive',
     };
 
