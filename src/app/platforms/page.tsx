@@ -1,10 +1,10 @@
 'use client';
 
-import { fetchRequest } from '@/lib/api';
-import { Platform } from '@/models/platform';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { fetchRequest } from '@/lib/api';
 import { mapToPlatform } from '@/mappers/platform.mapper';
+import { Platform } from '@/models/platform';
 
 export default function Page() {
   const [platforms, setPlatforms] = useState<Platform[]>([]);

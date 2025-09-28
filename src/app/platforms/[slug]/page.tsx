@@ -1,10 +1,10 @@
 'use client';
 
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { fetchRequest } from '@/lib/api';
 import { mapToPlatform } from '@/mappers/platform.mapper';
 import { Platform } from '@/models/platform';
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
 export default function Page() {
   const { slug } = useParams();

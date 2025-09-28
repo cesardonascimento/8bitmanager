@@ -1,6 +1,6 @@
+import { eq } from 'drizzle-orm';
 import { db } from '../index';
 import { platformsTable } from '../schema';
-import { eq } from 'drizzle-orm';
 
 export type PlatformInsertSchema = typeof platformsTable.$inferInsert;
 export type PlatformSelectSchema = typeof platformsTable.$inferSelect;

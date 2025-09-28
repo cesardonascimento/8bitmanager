@@ -1,6 +1,5 @@
-import Link from 'next/link';
 import { Joystick, Gamepad2 } from 'lucide-react';
-import { PlatformSelectSchema } from '@/db/services/platforms';
+import Link from 'next/link';
 import {
   Sidebar,
   SidebarContent,
@@ -14,8 +13,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-import { mapToPlatform } from '@/mappers/platform.mapper';
 import { PlatformsService } from '@/db/services/platforms';
+import { mapToPlatform } from '@/mappers/platform.mapper';
 
 export async function AppSidebar() {
   const platforms = await PlatformsService.getAll();
