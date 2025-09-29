@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { sqliteTable, text, int } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, int, integer } from 'drizzle-orm/sqlite-core';
 
 export const platformsTable = sqliteTable('platforms', {
   id: text().primaryKey(),
@@ -9,6 +9,9 @@ export const platformsTable = sqliteTable('platforms', {
 
 export const gamesTable = sqliteTable('games', {
   id: int().primaryKey({ autoIncrement: true }),
+  inCollection: integer('inCollection', { mode: 'boolean' })
+    .notNull()
+    .default(false),
   platformId: text(),
   title: text().notNull(),
   titleVariants: text(),

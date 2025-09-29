@@ -13,7 +13,7 @@ async function seed() {
     return games.map(game => ({
       platformId: platformId,
       title: game[0],
-      titleVariants: game.length > 1 ? game.slice(1).join(', ') : undefined,
+      titleVariants: game.length > 1 ? game.slice(1).join(' | ') : undefined,
       titleNormalized: normalizeTitle(game[0]),
     }));
   };

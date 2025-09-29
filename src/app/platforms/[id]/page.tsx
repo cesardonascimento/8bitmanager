@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import GamesTable from '@/components/game/games-table';
 import { PlatformRepository } from '@/db/repositories/platform.repository';
 
 export default async function Page({
@@ -19,6 +20,8 @@ export default async function Page({
         <p className="text-muted-foreground">{platform.company}</p>
         <h1 className="text-3xl font-bold">{platform.name}</h1>
       </div>
+
+      <GamesTable games={platform.games} />
     </div>
   );
 }
