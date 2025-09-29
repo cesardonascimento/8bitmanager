@@ -1,6 +1,7 @@
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { FlatCompat } from '@eslint/eslintrc';
+import unusedImports from 'eslint-plugin-unused-imports';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -14,16 +15,22 @@ const eslintConfig = [
   ...compat.extends('prettier'),
   ...compat.extends('plugin:import/recommended'),
   {
+    plugins: {
+      'unused-imports': unusedImports,
+    },
     rules: {
-      '@typescript-eslint/no-unused-vars': [
-        'error',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'import/no-duplicates': 'error',
+      'unused-imports/no-unused-imports': 'error',
+      'unused-imports/no-unused-vars': [
+        'warn',
         {
+          args: 'after-used',
           argsIgnorePattern: '^_',
+          vars: 'all',
           varsIgnorePattern: '^_',
-          caughtErrorsIgnorePattern: '^_',
         },
       ],
-      'import/no-duplicates': 'error',
       'import/order': [
         'error',
         {

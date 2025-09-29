@@ -1,48 +1,129 @@
-import { CircleCheck, CircleX } from 'lucide-react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { ColumnDef } from '@tanstack/react-table';
+import { ArrowUpDown, CheckCircle2, CircleX, FileUp } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Game } from '@/db/repositories/game.repository';
+import DataTable from '../shared/data-table';
+import { Button } from '../ui/button';
 
 export type GamesTableProps = {
   games: Game[];
 };
 
+export const columns: ColumnDef<Game>[] = [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
+        }
+        onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={value => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: 'title',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="link"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Title
+          <ArrowUpDown />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div>{row.getValue('title')}</div>,
+  },
+  {
+    accessorKey: 'titleVariants',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="link"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Title variants
+          <ArrowUpDown />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div>{row.getValue('titleVariants')}</div>,
+  },
+  {
+    accessorKey: 'titleNormalized',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="link"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Title normalized
+          <ArrowUpDown />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div>{row.getValue('titleNormalized')}</div>,
+  },
+  {
+    accessorKey: 'inCollection',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="link"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Status
+          <ArrowUpDown />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const inCollection = row.getValue('inCollection') as boolean;
+
+      return (
+        <div className="flex justify-center">
+          {inCollection && (
+            <Badge variant="outline">
+              <CheckCircle2 className="text-green-500" /> Owned
+            </Badge>
+          )}
+          {!inCollection && (
+            <Badge variant="outline">
+              <CircleX className="text-red-500" /> Missing
+            </Badge>
+          )}
+        </div>
+      );
+    },
+  },
+];
+
 export default function GamesTable({ games }: GamesTableProps) {
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Title</TableHead>
-          <TableHead>Title variants</TableHead>
-          <TableHead>Normalized title</TableHead>
-          <TableHead className="text-center">In collection</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {games?.map((game, index) => (
-          <TableRow key={index}>
-            <TableCell>{game.title}</TableCell>
-            <TableCell>
-              {game.titleVariants ? game.titleVariants : '-'}
-            </TableCell>
-            <TableCell>{game.titleNormalized}</TableCell>
-            <TableCell className="text-center">
-              <div className="flex justify-center">
-                {game.inCollection && (
-                  <CircleCheck className="text-green-500" />
-                )}
-                {!game.inCollection && <CircleX className="text-red-500" />}
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <DataTable
+      columns={columns}
+      customActions={
+        <Button variant="outline">
+          <FileUp />
+          Import gamelist.xml
+        </Button>
+      }
+      data={games}
+      filterKey="title"
+    />
   );
 }

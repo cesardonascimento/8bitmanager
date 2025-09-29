@@ -5,8 +5,8 @@ export default async function Page() {
   const platforms = await PlatformRepository.list();
 
   return (
-    <div className="space-y-6">
-      <div>
+    <div className="space-y-8">
+      <div className="space-y-1">
         <h1 className="text-3xl font-bold">Platforms</h1>
         <p className="text-muted-foreground">
           Browse and manage your gaming platforms
