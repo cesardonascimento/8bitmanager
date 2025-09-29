@@ -1,25 +1,8 @@
-'use client';
+import { PlatformCard } from '@/components/platform/platform-list-item';
+import { PlatformRepository } from '@/db/repositories/platform.repository';
 
-import { useEffect, useState } from 'react';
-import {
-  PlatformCard,
-  PlatformCardSkeleton,
-} from '@/components/platform/platform-list-item';
-import { Platform } from '@/db/repositories/platform.repository';
-import { fetchRequest } from '@/lib/api/client';
-
-export default function Page() {
-  const [platforms, setPlatforms] = useState<Platform[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPlatforms = async () => {
-      const data = await fetchRequest('/platforms');
-      setPlatforms(data as Platform[]);
-      setLoading(false);
-    };
-    fetchPlatforms();
-  }, []);
+export default async function Page() {
+  const platforms = await PlatformRepository.list();
 
   return (
     <div className="space-y-6">
@@ -31,19 +14,9 @@ export default function Page() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {loading && (
-          <>
-            <PlatformCardSkeleton />
-            <PlatformCardSkeleton />
-            <PlatformCardSkeleton />
-            <PlatformCardSkeleton />
-          </>
-        )}
-
-        {!loading &&
-          platforms.map(platform => (
-            <PlatformCard key={platform.id} platform={platform} />
-          ))}
+        {platforms.map(platform => (
+          <PlatformCard key={platform.id} platform={platform} />
+        ))}
       </div>
     </div>
   );
