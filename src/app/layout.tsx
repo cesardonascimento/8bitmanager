@@ -40,12 +40,12 @@ export default function RootLayout({
             <SidebarProvider>
               <AppSidebar />
               <SidebarInset>
-                <div className="p-4 flex justify-between items-center">
+                <div className="px-8 py-4 flex justify-between items-center">
                   <SidebarTrigger />
                   <ThemeSwitch />
                 </div>
                 <Separator />
-                <div className="p-4 flex flex-col gap-4">{children}</div>
+                <div className="p-8 flex flex-col gap-4">{children}</div>
               </SidebarInset>
             </SidebarProvider>
           </NotificationProvider>

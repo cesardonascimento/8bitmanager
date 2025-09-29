@@ -1,3 +1,4 @@
+import { relations } from 'drizzle-orm';
 import { sqliteTable, text, int } from 'drizzle-orm/sqlite-core';
 
 export const platformsTable = sqliteTable('platforms', {
@@ -8,8 +9,19 @@ export const platformsTable = sqliteTable('platforms', {
 
 export const gamesTable = sqliteTable('games', {
   id: int().primaryKey({ autoIncrement: true }),
-  platformId: text().references(() => platformsTable.id),
+  platformId: text(),
   title: text().notNull(),
   titleVariants: text(),
   titleNormalized: text().notNull(),
 });
+
+export const platformsRelations = relations(platformsTable, ({ many }) => ({
+  games: many(gamesTable),
+}));
+
+export const gamesRelations = relations(gamesTable, ({ one }) => ({
+  platform: one(platformsTable, {
+    fields: [gamesTable.platformId],
+    references: [platformsTable.id],
+  }),
+}));
