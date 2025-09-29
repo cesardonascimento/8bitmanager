@@ -13,21 +13,19 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-import { PlatformsService } from '@/db/services/platforms';
-import { mapToPlatform } from '@/mappers/platform.mapper';
+import { PlatformRepository } from '@/db/repositories/platform.repository';
 
 export async function AppSidebar() {
-  const platforms = await PlatformsService.getAll();
-  const mappedPlatforms = platforms.map(mapToPlatform);
+  const platforms = await PlatformRepository.list();
 
   const items = [
     {
       title: 'Platforms',
       url: '/platforms',
       icon: Joystick,
-      submenu: mappedPlatforms.map(platform => ({
+      submenu: platforms.map(platform => ({
         title: platform.name,
-        url: `/platforms/${platform.slug}`,
+        url: `/platforms/${platform.id}`,
         icon: Gamepad2,
       })),
     },

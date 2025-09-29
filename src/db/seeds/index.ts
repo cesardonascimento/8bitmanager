@@ -1,176 +1,191 @@
 import 'dotenv/config';
+import { PlatformInsert } from '@/db/repositories/platform.repository';
+import { normalizeTitle } from '@/lib/games/utils';
 import { db } from '../index';
-import { platformsTable } from '../schema';
+import { gamesTable, platformsTable } from '../schema';
 import megaDriveGames from './games/mega-drive.json';
 
 async function seed() {
+  const mapGames = (
+    platformId: string,
+    games: string[][]
+  ): (typeof gamesTable.$inferInsert)[] => {
+    return games.map(game => ({
+      platformId: platformId,
+      title: game[0],
+      titleVariants: game.length > 1 ? game.slice(1).join(', ') : undefined,
+      titleNormalized: normalizeTitle(game[0]),
+    }));
+  };
+
   await db.transaction(async tx => {
-    const _3do: typeof platformsTable.$inferInsert = {
+    const _3do: PlatformInsert = {
+      id: '3do',
       name: '3DO',
-      slug: '3do',
     };
 
-    const arcade: typeof platformsTable.$inferInsert = {
+    const arcade: PlatformInsert = {
+      id: 'arcade',
       name: 'Arcade',
-      slug: 'arcade',
     };
 
-    const atarijaguar: typeof platformsTable.$inferInsert = {
+    const atarijaguar: PlatformInsert = {
+      id: 'jaguar',
       company: 'Atari',
       name: 'Jaguar',
-      slug: 'jaguar',
     };
 
-    const atarilynx: typeof platformsTable.$inferInsert = {
+    const atarilynx: PlatformInsert = {
+      id: 'lynx',
       company: 'Atari',
       name: 'Lynx',
-      slug: 'lynx',
     };
 
-    const dreamcast: typeof platformsTable.$inferInsert = {
+    const dreamcast: PlatformInsert = {
+      id: 'dreamcast',
       company: 'Sega',
       name: 'Dreamcast',
-      slug: 'dreamcast',
     };
 
-    const gamegear: typeof platformsTable.$inferInsert = {
+    const gamegear: PlatformInsert = {
+      id: 'game-gear',
       company: 'Sega',
       name: 'Game Gear',
-      slug: 'game-gear',
     };
 
-    const gb: typeof platformsTable.$inferInsert = {
+    const gb: PlatformInsert = {
+      id: 'game-boy',
       company: 'Nintendo',
       name: 'Game Boy',
-      slug: 'game-boy',
     };
 
-    const gba: typeof platformsTable.$inferInsert = {
+    const gba: PlatformInsert = {
+      id: 'game-boy-advance',
       company: 'Nintendo',
       name: 'Game Boy Advance',
-      slug: 'game-boy-advance',
     };
 
-    const gbc: typeof platformsTable.$inferInsert = {
+    const gbc: PlatformInsert = {
+      id: 'game-boy-color',
       company: 'Nintendo',
       name: 'Game Boy Color',
-      slug: 'game-boy-color',
     };
 
-    const gc: typeof platformsTable.$inferInsert = {
+    const gc: PlatformInsert = {
+      id: 'gamecube',
       company: 'Nintendo',
       name: 'GameCube',
-      slug: 'gamecube',
     };
 
-    const mastersystem: typeof platformsTable.$inferInsert = {
+    const mastersystem: PlatformInsert = {
+      id: 'master-system',
       company: 'Sega',
       name: 'Master System',
-      slug: 'master-system',
     };
 
-    const megadrive: typeof platformsTable.$inferInsert = {
+    const megadrive: PlatformInsert = {
+      id: 'mega-drive',
       company: 'Sega',
       name: 'Mega Drive',
-      releasedGames: JSON.stringify(megaDriveGames),
-      slug: 'mega-drive',
     };
 
     const n64: typeof platformsTable.$inferInsert = {
+      id: 'nintendo-64',
       company: 'Nintendo',
       name: 'Nintendo 64',
-      slug: 'nintendo-64',
     };
 
     const nds: typeof platformsTable.$inferInsert = {
+      id: 'nintendo-ds',
       company: 'Nintendo',
       name: 'Nintendo DS',
-      slug: 'nintendo-ds',
     };
 
     const neogeo: typeof platformsTable.$inferInsert = {
+      id: 'neo-geo',
       company: 'SNK',
       name: 'Neo Geo',
-      slug: 'neo-geo',
     };
 
     const nes: typeof platformsTable.$inferInsert = {
+      id: 'nes',
       company: 'Nintendo',
       name: 'Nintendo Entertainment System',
-      slug: 'nes',
     };
 
     const ngpc: typeof platformsTable.$inferInsert = {
+      id: 'neo-geo-pocket-color',
       company: 'SNK',
       name: 'Neo Geo Pocket Color',
-      slug: 'neo-geo-pocket-color',
     };
 
     const pcengine: typeof platformsTable.$inferInsert = {
+      id: 'pc-engine',
       company: 'NEC',
       name: 'PC Engine',
-      slug: 'pc-engine',
     };
 
     const ps2: typeof platformsTable.$inferInsert = {
+      id: 'playstation-2',
       company: 'Sony',
       name: 'PlayStation 2',
-      slug: 'playstation-2',
     };
 
     const psp: typeof platformsTable.$inferInsert = {
+      id: 'playstation-portable',
       company: 'Sony',
       name: 'PlayStation Portable',
-      slug: 'playstation-portable',
     };
 
     const psx: typeof platformsTable.$inferInsert = {
+      id: 'playstation',
       company: 'Sony',
       name: 'PlayStation',
-      slug: 'playstation',
     };
 
     const saturn: typeof platformsTable.$inferInsert = {
+      id: 'saturn',
       company: 'Sega',
       name: 'Saturn',
-      slug: 'saturn',
     };
 
     const sega32x: typeof platformsTable.$inferInsert = {
+      id: '32x',
       company: 'Sega',
       name: 'Sega 32X',
-      slug: '32x',
     };
 
     const segacd: typeof platformsTable.$inferInsert = {
+      id: 'sega-cd',
       company: 'Sega',
       name: 'Sega CD',
-      slug: 'sega-cd',
     };
 
     const snes: typeof platformsTable.$inferInsert = {
+      id: 'snes',
       company: 'Nintendo',
       name: 'Super Nintendo Entertainment System',
-      slug: 'snes',
     };
 
     const wii: typeof platformsTable.$inferInsert = {
+      id: 'wii',
       company: 'Nintendo',
       name: 'Wii',
-      slug: 'wii',
     };
 
     const wonderswan: typeof platformsTable.$inferInsert = {
+      id: 'wonderswan',
       company: 'Bandai',
       name: 'WonderSwan',
-      slug: 'wonderswan',
     };
 
     const wonderswancolor: typeof platformsTable.$inferInsert = {
+      id: 'wonderswan-color',
       company: 'Bandai',
       name: 'WonderSwan Color',
-      slug: 'wonderswan-color',
     };
+
+    const megadriveGames = mapGames(megadrive.id, megaDriveGames);
 
     await tx.insert(platformsTable).values(_3do);
     await tx.insert(platformsTable).values(arcade);
@@ -184,6 +199,7 @@ async function seed() {
     await tx.insert(platformsTable).values(gc);
     await tx.insert(platformsTable).values(mastersystem);
     await tx.insert(platformsTable).values(megadrive);
+    await tx.insert(gamesTable).values(megadriveGames);
     await tx.insert(platformsTable).values(n64);
     await tx.insert(platformsTable).values(nds);
     await tx.insert(platformsTable).values(neogeo);

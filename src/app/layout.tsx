@@ -8,6 +8,7 @@ import {
   SidebarTrigger,
   SidebarInset,
 } from '@/components/ui/sidebar';
+import { NotificationProvider } from '@/providers/notification-provider';
 import { ThemeProvider } from '@/providers/theme-provider';
 import './globals.css';
 
@@ -22,7 +23,7 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Retro Manager',
+  title: '8bit Manager',
   description: 'Manage your retro games collection',
 };
 
@@ -35,17 +36,19 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${roboto.variable} ${robotoMono.variable} antialiased`}>
         <ThemeProvider defaultTheme="dark">
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset>
-              <div className="p-4 flex justify-between items-center">
-                <SidebarTrigger />
-                <ThemeSwitch />
-              </div>
-              <Separator />
-              <div className="p-4 flex flex-col gap-4">{children}</div>
-            </SidebarInset>
-          </SidebarProvider>
+          <NotificationProvider>
+            <SidebarProvider>
+              <AppSidebar />
+              <SidebarInset>
+                <div className="p-4 flex justify-between items-center">
+                  <SidebarTrigger />
+                  <ThemeSwitch />
+                </div>
+                <Separator />
+                <div className="p-4 flex flex-col gap-4">{children}</div>
+              </SidebarInset>
+            </SidebarProvider>
+          </NotificationProvider>
         </ThemeProvider>
       </body>
     </html>

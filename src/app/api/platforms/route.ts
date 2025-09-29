@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server';
-import { PlatformsService } from '@/db/services/platforms';
+import { PlatformRepository } from '@/db/repositories/platform.repository';
 
 export async function GET() {
   try {
-    const platforms = await PlatformsService.getAll();
+    const platforms = await PlatformRepository.list();
     return NextResponse.json(platforms);
   } catch (error) {
     return NextResponse.json({ error }, { status: 500 });
   }
 }
-
-export { GET as platformsRoute };
