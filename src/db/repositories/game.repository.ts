@@ -10,7 +10,7 @@ export class GameRepository {
     return (await db.query.gamesTable.findMany()) as Game[];
   }
 
-  static async fetch(id: number): Promise<Game | null> {
+  static async fetch(id: string): Promise<Game | null> {
     const result = await db.query.gamesTable.findFirst({
       where: eq(gamesTable.id, id),
     });
@@ -23,7 +23,7 @@ export class GameRepository {
   }
 
   static async update(
-    id: number,
+    id: string,
     game: Partial<GameInsert>
   ): Promise<Game | null> {
     const result = await db
@@ -34,7 +34,7 @@ export class GameRepository {
     return result[0] as Game | null;
   }
 
-  static async delete(id: number): Promise<boolean> {
+  static async delete(id: string): Promise<boolean> {
     const result = await db.delete(gamesTable).where(eq(gamesTable.id, id));
     return result.rowsAffected > 0;
   }

@@ -4,9 +4,11 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import GameListsTable from '@/components/game-list/game-lists-table';
 import { GamesBadges } from '@/components/platform/games-badges';
 import PageLoader from '@/components/shared/page-loader';
 import { Button } from '@/components/ui/button';
+import { GameList } from '@/db/repositories/game-list.repository';
 import { Platform } from '@/db/repositories/platform.repository';
 import { fetchRequest } from '@/lib/api/client';
 
@@ -14,18 +16,29 @@ export default function Page() {
   const { id } = useParams();
 
   const [platform, setPlatform] = useState<Platform | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [gameLists, setGameLists] = useState<GameList[]>([]);
+  const [loadingPlatform, setLoadingPlatform] = useState(true);
+  const [loadingGameLists, setLoadingGameLists] = useState(true);
 
   useEffect(() => {
     const fetchPlatform = async () => {
       const data = await fetchRequest(`/platforms/${id}`);
       setPlatform(data as Platform);
-      setLoading(false);
+      setLoadingPlatform(false);
     };
     fetchPlatform();
   }, [id]);
 
-  if (loading) {
+  useEffect(() => {
+    const fetchGameLists = async () => {
+      const data = await fetchRequest(`/game-lists?platformId=${id}`);
+      setGameLists(data as GameList[]);
+      setLoadingGameLists(false);
+    };
+    fetchGameLists();
+  }, [id]);
+
+  if (loadingPlatform || loadingGameLists) {
     return <PageLoader />;
   }
 
@@ -47,6 +60,9 @@ export default function Page() {
           <h1 className="text-3xl font-bold">{platform.name}</h1>
         </div>
         <GamesBadges platform={platform} />
+      </div>
+      <div className="w-full overflow-x-auto">
+        <GameListsTable gameLists={gameLists} platformId={platform.id} />
       </div>
     </div>
   );
