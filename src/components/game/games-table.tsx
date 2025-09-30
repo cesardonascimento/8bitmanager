@@ -1,9 +1,9 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, CheckCircle2, CircleX, FileUp } from 'lucide-react';
-import Link from 'next/link';
+import { ArrowUpDown, CheckCircle2, CircleX } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Game } from '@/db/repositories/game.repository';
+import FileImportDialog from '../game-list/file-import-dialog';
 import DataTable from '../shared/data-table';
 import { Button } from '../ui/button';
 
@@ -118,14 +118,7 @@ export default function GamesTable({ games, platformId }: GamesTableProps) {
   return (
     <DataTable
       columns={columns}
-      customActions={
-        <Button variant="outline" asChild>
-          <Link href={`/platforms/${platformId}/import`}>
-            <FileUp />
-            Import gamelist.xml
-          </Link>
-        </Button>
-      }
+      customActions={<FileImportDialog platformId={platformId} />}
       data={games}
       filterKey="title"
     />

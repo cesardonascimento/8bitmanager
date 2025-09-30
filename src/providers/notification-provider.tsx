@@ -26,6 +26,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
   };
 
   const notifyError = (message: string, description?: string) => {
+    console.error(message, description);
     toast.error(message, {
       description,
       duration: 5000,

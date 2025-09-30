@@ -5,6 +5,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { GameList } from '@/db/repositories/game-list.repository';
 import DataTable from '../shared/data-table';
 import { Button } from '../ui/button';
+import FileImportDialog from './file-import-dialog';
 
 export type GameListsTableProps = {
   gameLists: GameList[];
@@ -91,7 +92,7 @@ export default function GameListsTable({
   return (
     <DataTable
       columns={columns}
-      customActions={<div>temp</div>}
+      customActions={<FileImportDialog platformId={platformId} />}
       data={gameLists}
       filterKey="id"
     />

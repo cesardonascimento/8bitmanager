@@ -4,10 +4,12 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
   VisibilityState,
+  Table as TableType,
 } from '@tanstack/react-table';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
@@ -52,10 +54,16 @@ export default function GamesTable<T>({
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    initialState: {
+      pagination: {
+        pageSize: 200,
+      },
+    },
     state: {
       sorting,
       columnFilters,
@@ -63,9 +71,6 @@ export default function GamesTable<T>({
       rowSelection,
     },
   });
-
-  const selectedRows = table.getFilteredSelectedRowModel().rows.length;
-  const totalRows = table.getFilteredRowModel().rows.length;
 
   return (
     <div className="flex flex-col gap-4">
@@ -111,9 +116,6 @@ export default function GamesTable<T>({
           </DropdownMenu>
         </div>
       </div>
-      {selectedRows > 0 && (
-        <RowsCounter selectedRows={selectedRows} totalRows={totalRows} />
-      )}
       <div className="overflow-hidden">
         <Table>
           <TableHeader>
@@ -164,22 +166,37 @@ export default function GamesTable<T>({
           </TableBody>
         </Table>
       </div>
-      <RowsCounter selectedRows={selectedRows} totalRows={totalRows} />
+      <RowsCounter table={table} />
     </div>
   );
 }
 
-export function RowsCounter({
-  selectedRows,
-  totalRows,
-}: {
-  selectedRows: number;
-  totalRows: number;
-}) {
+export function RowsCounter<T>({ table }: { table: TableType<T> }) {
+  const selectedRows = table.getFilteredSelectedRowModel().rows.length;
+  const totalRows = table.getFilteredRowModel().rows.length;
+
   return (
     <div className="flex items-center justify-end space-x-2">
       <div className="text-muted-foreground flex-1 text-sm">
         {selectedRows} of {totalRows} row(s) selected.
+      </div>
+      <div className="space-x-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
       </div>
     </div>
   );

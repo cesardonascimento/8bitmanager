@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
-import { GameListRepository } from '@/db/repositories/game-list.repository';
+import {
+  GameListInsert,
+  GameListRepository,
+} from '@/db/repositories/game-list.repository';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -20,6 +23,18 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.json(gameLists);
+  } catch (error) {
+    return NextResponse.json({ error }, { status: 500 });
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const gameList = await request.json();
+    const createdGameList = await GameListRepository.create(
+      gameList as GameListInsert
+    );
+    return NextResponse.json(createdGameList);
   } catch (error) {
     return NextResponse.json({ error }, { status: 500 });
   }

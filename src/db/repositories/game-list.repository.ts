@@ -4,6 +4,13 @@ import { gameListsTable } from '../schema';
 
 export type GameListInsert = typeof gameListsTable.$inferInsert;
 export type GameList = typeof gameListsTable.$inferSelect;
+export type GameListContentItem = {
+  id: string;
+  title: string;
+  titleNormalized: string;
+  releasedGameId: string;
+  releasedGameCandidates: string[];
+};
 
 export class GameListRepository {
   static async list(platformId: string): Promise<GameList[]> {
@@ -19,18 +26,18 @@ export class GameListRepository {
     return result || null;
   }
 
-  static async create(game: GameListInsert): Promise<GameList> {
-    const result = await db.insert(gameListsTable).values(game).returning();
+  static async create(gameList: GameListInsert): Promise<GameList> {
+    const result = await db.insert(gameListsTable).values(gameList).returning();
     return result[0] as GameList;
   }
 
   static async update(
     id: string,
-    game: Partial<GameListInsert>
+    gameList: Partial<GameListInsert>
   ): Promise<GameList | null> {
     const result = await db
       .update(gameListsTable)
-      .set(game)
+      .set(gameList)
       .where(eq(gameListsTable.id, id))
       .returning();
     return result[0] as GameList | null;
