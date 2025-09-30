@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, CheckCircle2, CircleX, FileUp } from 'lucide-react';
+import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Game } from '@/db/repositories/game.repository';
@@ -8,6 +9,7 @@ import { Button } from '../ui/button';
 
 export type GamesTableProps = {
   games: Game[];
+  platformId: string;
 };
 
 export const columns: ColumnDef<Game>[] = [
@@ -112,14 +114,16 @@ export const columns: ColumnDef<Game>[] = [
   },
 ];
 
-export default function GamesTable({ games }: GamesTableProps) {
+export default function GamesTable({ games, platformId }: GamesTableProps) {
   return (
     <DataTable
       columns={columns}
       customActions={
-        <Button variant="outline">
-          <FileUp />
-          Import gamelist.xml
+        <Button variant="outline" asChild>
+          <Link href={`/platforms/${platformId}/import`}>
+            <FileUp />
+            Import gamelist.xml
+          </Link>
         </Button>
       }
       data={games}

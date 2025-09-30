@@ -64,6 +64,9 @@ export default function GamesTable<T>({
     },
   });
 
+  const selectedRows = table.getFilteredSelectedRowModel().rows.length;
+  const totalRows = table.getFilteredRowModel().rows.length;
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -108,12 +111,9 @@ export default function GamesTable<T>({
           </DropdownMenu>
         </div>
       </div>
-      <div className="flex items-center justify-end space-x-2">
-        <div className="text-muted-foreground flex-1 text-sm">
-          {table.getFilteredSelectedRowModel().rows.length} of{' '}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-      </div>
+      {selectedRows > 0 && (
+        <RowsCounter selectedRows={selectedRows} totalRows={totalRows} />
+      )}
       <div className="overflow-hidden">
         <Table>
           <TableHeader>
@@ -163,6 +163,23 @@ export default function GamesTable<T>({
             )}
           </TableBody>
         </Table>
+      </div>
+      <RowsCounter selectedRows={selectedRows} totalRows={totalRows} />
+    </div>
+  );
+}
+
+export function RowsCounter({
+  selectedRows,
+  totalRows,
+}: {
+  selectedRows: number;
+  totalRows: number;
+}) {
+  return (
+    <div className="flex items-center justify-end space-x-2">
+      <div className="text-muted-foreground flex-1 text-sm">
+        {selectedRows} of {totalRows} row(s) selected.
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
 import { ExternalLink } from 'lucide-react';
 import Link from 'next/link';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -11,16 +10,13 @@ import {
 } from '@/components/ui/card';
 import { Platform } from '@/db/repositories/platform.repository';
 import { Skeleton } from '../ui/skeleton';
+import { GamesBadges } from './games-badges';
 
 interface PlatformCardProps {
   platform: Platform;
 }
 
 export function PlatformCard({ platform }: PlatformCardProps) {
-  const totalGames = platform.games.length;
-  const ownedGames = platform.games.filter(game => game.inCollection).length;
-  const missingGames = totalGames - ownedGames;
-
   return (
     <Card>
       <CardHeader>
@@ -31,13 +27,7 @@ export function PlatformCard({ platform }: PlatformCardProps) {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
-          <div className="flex gap-2">
-            <Badge variant="secondary">{totalGames} Released</Badge>
-            <Badge variant="secondary">{ownedGames} Owned</Badge>
-            <Badge variant={missingGames > 0 ? 'destructive' : 'secondary'}>
-              {missingGames} Missing
-            </Badge>
-          </div>
+          <GamesBadges platform={platform} />
         </div>
       </CardContent>
       <CardFooter>

@@ -4,7 +4,6 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import GamesTable from '@/components/game/games-table';
 import { GamesBadges } from '@/components/platform/games-badges';
 import PageLoader from '@/components/shared/page-loader';
 import { Button } from '@/components/ui/button';
@@ -38,7 +37,7 @@ export default function Page() {
     <div className="space-y-8">
       <div className="space-y-4">
         <Button variant="ghost" asChild>
-          <Link href="/platforms">
+          <Link href={`/platforms/${id}`}>
             <ArrowLeft />
             Back
           </Link>
@@ -48,9 +47,6 @@ export default function Page() {
           <h1 className="text-3xl font-bold">{platform.name}</h1>
         </div>
         <GamesBadges platform={platform} />
-      </div>
-      <div className="w-full overflow-x-auto">
-        <GamesTable games={platform.games} platformId={platform.id} />
       </div>
     </div>
   );
