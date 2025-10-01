@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { notFound, useParams, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import GamesTable from '@/components/game/games-table';
-import { GamesBadges } from '@/components/platform/games-badges';
+import { PlatformBadges } from '@/components/platform/platform-badges';
 import PageLoader from '@/components/shared/page-loader';
 import {
   Breadcrumb,
@@ -80,14 +80,14 @@ const PageTitle = ({ platform }: { platform: Platform }) => {
         <p className="text-muted-foreground">{platform.company}</p>
         <h1 className="text-3xl font-bold">{platform.name}</h1>
       </div>
-      <GamesBadges platform={platform} />
+      <PlatformBadges platform={platform} />
     </div>
   );
 };
 
 const PageNavigation = ({ platform }: { platform: Platform }) => {
   const pathname = usePathname();
-  const currentTab = pathname.includes('/imports') ? 'imports' : 'games';
+  const currentTab = pathname.includes('/game-lists') ? 'gameLists' : 'games';
 
   return (
     <div className="flex justify-between items-center">
@@ -99,10 +99,10 @@ const PageNavigation = ({ platform }: { platform: Platform }) => {
               Games
             </Link>
           </TabsTrigger>
-          <TabsTrigger value="imports" asChild>
-            <Link href={`/platforms/${platform.id}/imports`}>
+          <TabsTrigger value="gameLists" asChild>
+            <Link href={`/platforms/${platform.id}/game-lists`}>
               <History />
-              Imports
+              Game Lists
             </Link>
           </TabsTrigger>
         </TabsList>

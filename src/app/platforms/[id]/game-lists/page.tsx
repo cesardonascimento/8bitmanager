@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { notFound, useParams, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import GameListsTable from '@/components/game-list/game-lists-table';
-import { GamesBadges } from '@/components/platform/games-badges';
+import { PlatformBadges } from '@/components/platform/platform-badges';
 import PageLoader from '@/components/shared/page-loader';
 import {
   Breadcrumb,
@@ -32,6 +32,7 @@ export default function Page() {
   useEffect(() => {
     const fetchPlatform = async () => {
       const data = await fetchRequest(`/platforms/${id}`);
+      console.log('data', data);
       setPlatform(data as Platform);
       setLoadingPlatform(false);
     };
@@ -84,7 +85,7 @@ const PageBreadcrumb = ({ platform }: { platform: Platform }) => {
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbPage>Imports</BreadcrumbPage>
+          <BreadcrumbPage>Game lists</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
@@ -98,14 +99,14 @@ const PageTitle = ({ platform }: { platform: Platform }) => {
         <p className="text-muted-foreground">{platform.company}</p>
         <h1 className="text-3xl font-bold">{platform.name}</h1>
       </div>
-      <GamesBadges platform={platform} />
+      <PlatformBadges platform={platform} />
     </div>
   );
 };
 
 const PageNavigation = ({ platform }: { platform: Platform }) => {
   const pathname = usePathname();
-  const currentTab = pathname.includes('/imports') ? 'imports' : 'games';
+  const currentTab = pathname.includes('/game-lists') ? 'gameLists' : 'games';
 
   return (
     <div className="flex justify-between items-center">
@@ -117,10 +118,10 @@ const PageNavigation = ({ platform }: { platform: Platform }) => {
               Games
             </Link>
           </TabsTrigger>
-          <TabsTrigger value="imports" asChild>
-            <Link href={`/platforms/${platform.id}/imports`}>
+          <TabsTrigger value="gameLists" asChild>
+            <Link href={`/platforms/${platform.id}/game-lists`}>
               <History />
-              Imports
+              Game Lists
             </Link>
           </TabsTrigger>
         </TabsList>
@@ -145,7 +146,7 @@ const PageTable = ({
   return (
     <div className="flex flex-col gap-6 p-6 border rounded-md">
       <div className="space-y-1">
-        <h2 className="text-2xl font-bold">Imports</h2>
+        <h2 className="text-2xl font-bold">Game lists</h2>
         <p className="text-muted-foreground">
           This list contains all imported game lists for this platform.
         </p>

@@ -1,19 +1,16 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { format } from 'date-fns';
 import { ArrowUpDown, SquarePen } from 'lucide-react';
 import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox';
-import { GameList } from '@/db/repositories/game-list.repository';
+import { Platform } from '@/db/repositories/platform.repository';
 import DataTable from '../shared/data-table';
 import { Button } from '../ui/button';
-import FileImportDialog from './file-import-dialog';
 
-export type GameListsTableProps = {
-  gameLists: GameList[];
-  platformId: string;
+export type PlatformsTableProps = {
+  platforms: Platform[];
 };
 
-export const columns: ColumnDef<GameList>[] = [
+export const columns: ColumnDef<Platform>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -37,40 +34,37 @@ export const columns: ColumnDef<GameList>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'id',
+    accessorKey: 'name',
     header: ({ column }) => {
       return (
         <Button
           variant="link"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          ID
+          Name
           <ArrowUpDown />
         </Button>
       );
     },
-    cell: ({ row }) => <div>{row.getValue('id')}</div>,
+    cell: ({ row }) => <div>{row.getValue('name')}</div>,
   },
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'company',
     header: ({ column }) => {
       return (
         <Button
           variant="link"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          Created at
+          Company
           <ArrowUpDown />
         </Button>
       );
     },
-    cell: ({ row }) => {
-      const date = row.getValue('createdAt') as string;
-      return <div>{format(date, 'yyyy-MM-dd HH:mm')}</div>;
-    },
+    cell: ({ row }) => <div>{row.getValue('company') || '-'}</div>,
   },
   {
-    accessorKey: 'gamesCount',
+    accessorKey: 'releasedGamesCount',
     header: ({ column }) => {
       return (
         <div className="text-center">
@@ -78,14 +72,33 @@ export const columns: ColumnDef<GameList>[] = [
             variant="link"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
-            Games count
+            Released games
             <ArrowUpDown />
           </Button>
         </div>
       );
     },
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue('gamesCount')}</div>
+      <div className="text-center">{row.getValue('releasedGamesCount')}</div>
+    ),
+  },
+  {
+    accessorKey: 'collectionGamesCount',
+    header: ({ column }) => {
+      return (
+        <div className="text-center">
+          <Button
+            variant="link"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Collection games
+            <ArrowUpDown />
+          </Button>
+        </div>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue('collectionGamesCount')}</div>
     ),
   },
   {
@@ -94,9 +107,7 @@ export const columns: ColumnDef<GameList>[] = [
     cell: ({ row }) => {
       return (
         <Button variant="outline" asChild>
-          <Link
-            href={`/platforms/${row.original.platformId}/imports/${row.original.id}`}
-          >
+          <Link href={`/platforms/${row.original.id}`}>
             <SquarePen />
           </Link>
         </Button>
@@ -105,16 +116,6 @@ export const columns: ColumnDef<GameList>[] = [
   },
 ];
 
-export default function GameListsTable({
-  gameLists,
-  platformId,
-}: GameListsTableProps) {
-  return (
-    <DataTable
-      columns={columns}
-      customActions={<FileImportDialog platformId={platformId} />}
-      data={gameLists}
-      filterKeys={['id']}
-    />
-  );
+export default function PlatformsTable({ platforms }: PlatformsTableProps) {
+  return <DataTable columns={columns} data={platforms} filterKeys={['id']} />;
 }

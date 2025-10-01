@@ -1,11 +1,10 @@
-import 'dotenv/config';
 import { PlatformInsert } from '@/db/repositories/platform.repository';
 import { normalizeTitle } from '@/lib/games/utils';
 import { db } from '../index';
 import { gamesTable, platformsTable } from '../schema';
-import megaDriveGames from './games/mega-drive.json';
+import megaDriveGames from '../seeds/games/mega-drive.json';
 
-async function seed() {
+export async function seedDatabase() {
   const mapGames = (
     platformId: string,
     games: string[][]
@@ -13,7 +12,7 @@ async function seed() {
     return games.map(game => ({
       platformId: platformId,
       title: game[0],
-      titleVariants: game.length > 1 ? game.slice(1).join(' | ') : undefined,
+      titleVariants: game.slice(1),
       titleNormalized: normalizeTitle(game[0]),
     }));
   };
@@ -219,4 +218,6 @@ async function seed() {
   });
 }
 
-seed();
+if (require.main === module) {
+  seedDatabase();
+}

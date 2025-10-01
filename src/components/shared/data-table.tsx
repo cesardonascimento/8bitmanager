@@ -157,7 +157,7 @@ export default function GamesTable<T>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-16 text-center"
                 >
                   No results.
                 </TableCell>

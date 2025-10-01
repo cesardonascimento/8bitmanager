@@ -109,7 +109,6 @@ export default function FileImportDialog({
       const gameList = {
         platformId,
         content: gameListContent,
-        gamesCount: gamesFound,
       };
 
       await createRequest(`/game-lists`, gameList);

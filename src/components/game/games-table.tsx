@@ -78,7 +78,13 @@ export const columns: ColumnDef<Game>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div>{row.getValue('titleVariants')}</div>,
+    cell: ({ row }) => (
+      <>
+        {(row.getValue('titleVariants') as string[]).map((variant: string) => (
+          <div key={variant}>{variant}</div>
+        ))}
+      </>
+    ),
   },
   {
     accessorKey: 'titleNormalized',
