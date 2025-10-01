@@ -73,30 +73,35 @@ export const columns: ColumnDef<GameList>[] = [
     accessorKey: 'gamesCount',
     header: ({ column }) => {
       return (
-        <Button
-          variant="link"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Games count
-          <ArrowUpDown />
+        <div className="text-center">
+          <Button
+            variant="link"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Games count
+            <ArrowUpDown />
+          </Button>
+        </div>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue('gamesCount')}</div>
+    ),
+  },
+  {
+    id: 'actions',
+    enableHiding: false,
+    cell: ({ row }) => {
+      return (
+        <Button variant="outline" asChild>
+          <Link
+            href={`/platforms/${row.original.platformId}/imports/${row.original.id}`}
+          >
+            <SquarePen />
+          </Link>
         </Button>
       );
     },
-    cell: ({ row }) => <div>{row.getValue('gamesCount')}</div>,
-  },
-  {
-    accessorKey: 'actions',
-    header: '',
-    cell: ({ row }) => (
-      <Button variant="outline" asChild>
-        <Link
-          href={`/platforms/${row.original.platformId}/imports/${row.original.id}`}
-        >
-          <SquarePen />
-          Manage
-        </Link>
-      </Button>
-    ),
   },
 ];
 

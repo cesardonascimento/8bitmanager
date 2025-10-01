@@ -79,16 +79,15 @@ export default function GamesTable<T>({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        {filterKeys && (
-          <Input
-            placeholder={`Filter by ${filterKeys.join(', ')}...`}
-            value={globalFilter}
-            onChange={event => setGlobalFilter(event.target.value)}
-            className="max-w-sm"
-          />
-        )}
         <div className="flex items-center gap-4">
-          {customActions}
+          {filterKeys && (
+            <Input
+              placeholder={`Filter by ${filterKeys.join(', ')}...`}
+              value={globalFilter}
+              onChange={event => setGlobalFilter(event.target.value)}
+              className="w-sm"
+            />
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
@@ -115,8 +114,9 @@ export default function GamesTable<T>({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        <div className="flex items-center gap-4">{customActions}</div>
       </div>
-      <div className="overflow-hidden">
+      <div className="overflow-hidden border rounded-md">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map(headerGroup => (

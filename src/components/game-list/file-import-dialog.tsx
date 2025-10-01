@@ -98,7 +98,7 @@ export default function FileImportDialog({
 
       setGameListContent(gameListContent);
     } catch (error) {
-      notifyError('Error parsing XML');
+      notifyError('Error parsing XML', error as string);
     }
   };
 
@@ -116,7 +116,7 @@ export default function FileImportDialog({
 
       notifySuccess('Game list imported successfully');
     } catch (error) {
-      notifyError('Error importing game list');
+      notifyError('Error importing game list', error as string);
     }
   };
 
