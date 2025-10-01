@@ -34,31 +34,34 @@ export type DataTableProps<T> = {
   columns: ColumnDef<T>[];
   customActions?: React.ReactNode;
   data: T[];
-  filterKey?: string;
+  filterKeys?: string[];
 };
 
 export default function GamesTable<T>({
   columns,
   customActions,
   data,
-  filterKey,
+  filterKeys,
 }: DataTableProps<T>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const [globalFilter, setGlobalFilter] = useState('');
 
   const table = useReactTable({
     data,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    globalFilterFn: 'includesString',
     initialState: {
       pagination: {
         pageSize: 200,
@@ -69,21 +72,18 @@ export default function GamesTable<T>({
       columnFilters,
       columnVisibility,
       rowSelection,
+      globalFilter,
     },
   });
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        {filterKey && (
+        {filterKeys && (
           <Input
-            placeholder={`Filter by ${filterKey}...`}
-            value={
-              (table.getColumn(filterKey)?.getFilterValue() as string) ?? ''
-            }
-            onChange={event =>
-              table.getColumn(filterKey)?.setFilterValue(event.target.value)
-            }
+            placeholder={`Filter by ${filterKeys.join(', ')}...`}
+            value={globalFilter}
+            onChange={event => setGlobalFilter(event.target.value)}
             className="max-w-sm"
           />
         )}

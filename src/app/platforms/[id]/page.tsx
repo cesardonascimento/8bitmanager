@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeft, FileUp, Gamepad2 } from 'lucide-react';
+import { ArrowLeft, Gamepad2, History } from 'lucide-react';
 import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -69,7 +69,7 @@ export default function Page() {
             <Gamepad2 /> Games
           </TabsTrigger>
           <TabsTrigger value="game-lists">
-            <FileUp /> Imports
+            <History /> Imports
           </TabsTrigger>
         </TabsList>
         <TabsContent value="games">

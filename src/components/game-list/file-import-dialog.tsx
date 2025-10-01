@@ -3,7 +3,7 @@
 import { FileUp } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { GameListContentItem } from '@/db/repositories/game-list.repository';
+import { GameListContentItem } from '@/db/schema';
 import { createRequest } from '@/lib/api/client';
 import { normalizeTitle } from '@/lib/games/utils';
 import { useNotification } from '@/providers/notification-provider';
@@ -32,6 +32,7 @@ export default function FileImportDialog({
     Record<string, GameListContentItem>
   >({});
   const [isFileSelected, setIsFileSelected] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
 
   const gamesFound = useMemo(
     () => Object.keys(gameListContent).length,
@@ -42,6 +43,7 @@ export default function FileImportDialog({
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
+      setIsImporting(false);
       setGameListContent({});
       setIsFileSelected(false);
     }
@@ -102,6 +104,8 @@ export default function FileImportDialog({
 
   const handleSubmit = async () => {
     try {
+      setIsImporting(true);
+
       const gameList = {
         platformId,
         content: gameListContent,
@@ -147,14 +151,20 @@ export default function FileImportDialog({
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button disabled={isImporting} variant="outline">
+              Cancel
+            </Button>
           </DialogClose>
-          <Button
-            disabled={!isFileSelected || gamesFound === 0}
-            onClick={handleSubmit}
-          >
-            Submit
-          </Button>
+          {isImporting ? (
+            <Button disabled>Importing...</Button>
+          ) : (
+            <Button
+              disabled={!isFileSelected || gamesFound === 0}
+              onClick={handleSubmit}
+            >
+              Import
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

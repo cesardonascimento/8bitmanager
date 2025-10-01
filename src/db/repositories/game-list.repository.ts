@@ -4,13 +4,6 @@ import { gameListsTable } from '../schema';
 
 export type GameListInsert = typeof gameListsTable.$inferInsert;
 export type GameList = typeof gameListsTable.$inferSelect;
-export type GameListContentItem = {
-  id: string;
-  title: string;
-  titleNormalized: string;
-  releasedGameId: string;
-  releasedGameCandidates: string[];
-};
 
 export class GameListRepository {
   static async list(platformId: string): Promise<GameList[]> {
@@ -27,6 +20,7 @@ export class GameListRepository {
   }
 
   static async create(gameList: GameListInsert): Promise<GameList> {
+    console.log('gameList', gameList);
     const result = await db.insert(gameListsTable).values(gameList).returning();
     return result[0] as GameList;
   }

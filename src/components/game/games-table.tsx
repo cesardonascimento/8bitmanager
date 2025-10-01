@@ -36,6 +36,21 @@ export const columns: ColumnDef<Game>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: 'id',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="link"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          ID
+          <ArrowUpDown />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div>{row.getValue('id')}</div>,
+  },
+  {
     accessorKey: 'title',
     header: ({ column }) => {
       return (
@@ -120,7 +135,7 @@ export default function GamesTable({ games, platformId }: GamesTableProps) {
       columns={columns}
       customActions={<FileImportDialog platformId={platformId} />}
       data={games}
-      filterKey="title"
+      filterKeys={['title', 'id']}
     />
   );
 }

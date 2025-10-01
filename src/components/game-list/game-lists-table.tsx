@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, SquarePen } from 'lucide-react';
+import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox';
 import { GameList } from '@/db/repositories/game-list.repository';
 import DataTable from '../shared/data-table';
@@ -83,6 +84,20 @@ export const columns: ColumnDef<GameList>[] = [
     },
     cell: ({ row }) => <div>{row.getValue('gamesCount')}</div>,
   },
+  {
+    accessorKey: 'actions',
+    header: '',
+    cell: ({ row }) => (
+      <Button variant="outline" asChild>
+        <Link
+          href={`/platforms/${row.original.platformId}/imports/${row.original.id}`}
+        >
+          <SquarePen />
+          Manage
+        </Link>
+      </Button>
+    ),
+  },
 ];
 
 export default function GameListsTable({
@@ -94,7 +109,7 @@ export default function GameListsTable({
       columns={columns}
       customActions={<FileImportDialog platformId={platformId} />}
       data={gameLists}
-      filterKey="id"
+      filterKeys={['id']}
     />
   );
 }

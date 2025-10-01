@@ -1,6 +1,14 @@
 import { relations, sql } from 'drizzle-orm';
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 
+export type GameListContentItem = {
+  id: string;
+  title: string;
+  titleNormalized: string;
+  releasedGameId: string;
+  releasedGameCandidates: string[];
+};
+
 export const platformsTable = sqliteTable('platforms', {
   id: text().primaryKey(),
   company: text(),
@@ -25,7 +33,10 @@ export const gameListsTable = sqliteTable('game_lists', {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   platformId: text().notNull(),
-  content: text({ mode: 'json' }).notNull().default('{}'),
+  content: text({ mode: 'json' })
+    .$type<Record<string, GameListContentItem>>()
+    .notNull()
+    .default(sql`'{}'`),
   gamesCount: integer('gamesCount').notNull().default(0),
   uploadedAt: integer('uploadedAt', { mode: 'timestamp' })
     .notNull()
