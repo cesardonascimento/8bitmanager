@@ -1,5 +1,9 @@
-import { NextResponse } from 'next/server';
 import { GameListRepository } from '@/db/repositories/game-list.repository';
+import {
+  respondError,
+  respondNotFound,
+  respondSuccess,
+} from '@/lib/api/server';
 
 export async function GET(
   _request: Request,
@@ -10,11 +14,11 @@ export async function GET(
     const gameList = await GameListRepository.fetch(id);
 
     if (!gameList) {
-      return NextResponse.json({ error: 'Record not found' }, { status: 404 });
+      return respondNotFound();
     }
 
-    return NextResponse.json(gameList);
+    return respondSuccess(gameList);
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return respondError(error);
   }
 }

@@ -95,7 +95,7 @@ export const columns: ColumnDef<GameList>[] = [
       return (
         <Button variant="outline" asChild>
           <Link
-            href={`/platforms/${row.original.platformId}/imports/${row.original.id}`}
+            href={`/platforms/${row.original.platformId}/game-lists/${row.original.id}`}
           >
             <SquarePen />
           </Link>

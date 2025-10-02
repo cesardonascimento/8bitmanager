@@ -1,9 +1,14 @@
-import { NextResponse } from 'next/server';
 import {
   GameListInsert,
   GameListRepository,
 } from '@/db/repositories/game-list.repository';
-import { PlatformRepository } from '@/db/repositories/platform.repository';
+import { GameRepository } from '@/db/repositories/game.repository';
+import {
+  respondBadRequest,
+  respondError,
+  respondNotFound,
+  respondSuccess,
+} from '@/lib/api/server';
 import { scanGameListContent as scanGameListContent } from '@/services/game-list.service';
 
 export async function GET(request: Request) {
@@ -11,48 +16,49 @@ export async function GET(request: Request) {
   const platformId = searchParams.get('platformId');
 
   if (!platformId) {
-    return NextResponse.json(
-      { error: 'Platform ID is required' },
-      { status: 400 }
-    );
+    return respondBadRequest('Platform ID is required');
   }
 
   try {
     const gameLists = await GameListRepository.list(platformId);
 
     if (!gameLists) {
-      return NextResponse.json({ error: 'Record not found' }, { status: 404 });
+      return respondNotFound();
     }
 
-    return NextResponse.json(gameLists);
+    return respondSuccess(gameLists);
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return respondError(error);
   }
 }
 
 export async function POST(request: Request) {
   try {
     const gameList = await request.json();
-    const platform = await PlatformRepository.fetch(gameList.platformId);
+    const games = await GameRepository.list(gameList.platformId);
 
-    if (!platform) {
-      return NextResponse.json(
-        { error: 'Platform not found' },
-        { status: 404 }
-      );
+    if (!games) {
+      return respondNotFound('Platform not found');
     }
 
-    const scannedContent = await scanGameListContent(platform, gameList);
+    const scannedContent = await scanGameListContent(games, gameList);
 
     const createdGameList = await GameListRepository.create({
       ...gameList,
       content: scannedContent,
     } as GameListInsert);
 
-    console.log('createdGameList', createdGameList);
+    await GameRepository.updateMany(
+      Object.values(scannedContent)
+        .filter(game => game.releasedGameId)
+        .map(game => ({
+          id: game.releasedGameId,
+          inCollection: true,
+        }))
+    );
 
-    return NextResponse.json(createdGameList);
+    return respondSuccess(createdGameList);
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return respondError(error);
   }
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { FileUp } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { GameListContentItem } from '@/db/schema';
@@ -28,6 +29,7 @@ export type FileImportDialogProps = {
 export default function FileImportDialog({
   platformId,
 }: FileImportDialogProps) {
+  const router = useRouter();
   const [gameListContent, setGameListContent] = useState<
     Record<string, GameListContentItem>
   >({});
@@ -98,7 +100,7 @@ export default function FileImportDialog({
 
       setGameListContent(gameListContent);
     } catch (error) {
-      notifyError('Error parsing XML', error as string);
+      notifyError('Error parsing XML', error);
     }
   };
 
@@ -111,11 +113,13 @@ export default function FileImportDialog({
         content: gameListContent,
       };
 
-      await createRequest(`/game-lists`, gameList);
+      const createdGameList = await createRequest(`/game-lists`, gameList);
 
       notifySuccess('Game list imported successfully');
+
+      router.push(`/platforms/${platformId}/game-lists/${createdGameList.id}`);
     } catch (error) {
-      notifyError('Error importing game list', error as string);
+      notifyError('Error importing game list', error);
     }
   };
 

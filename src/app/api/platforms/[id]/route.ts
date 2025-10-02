@@ -1,5 +1,9 @@
-import { NextResponse } from 'next/server';
 import { PlatformRepository } from '@/db/repositories/platform.repository';
+import {
+  respondError,
+  respondNotFound,
+  respondSuccess,
+} from '@/lib/api/server';
 
 export async function GET(
   _request: Request,
@@ -10,11 +14,11 @@ export async function GET(
     const platform = await PlatformRepository.fetch(id);
 
     if (!platform) {
-      return NextResponse.json({ error: 'Record not found' }, { status: 404 });
+      return respondNotFound();
     }
 
-    return NextResponse.json(platform);
+    return respondSuccess(platform);
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return respondError(error);
   }
 }

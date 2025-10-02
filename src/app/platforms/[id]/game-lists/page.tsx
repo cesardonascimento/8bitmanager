@@ -32,7 +32,6 @@ export default function Page() {
   useEffect(() => {
     const fetchPlatform = async () => {
       const data = await fetchRequest(`/platforms/${id}`);
-      console.log('data', data);
       setPlatform(data as Platform);
       setLoadingPlatform(false);
     };

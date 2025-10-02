@@ -67,6 +67,7 @@ export const gameListsTable = sqliteTable('game_lists', {
     .notNull()
     .default(sql`'{}'`),
   gamesCount: integer('gamesCount').notNull().default(0),
+  foundGamesCount: integer('foundGamesCount').notNull().default(0),
 });
 
 export const platformsRelations = relations(platformsTable, ({ many }) => ({

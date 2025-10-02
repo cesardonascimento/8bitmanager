@@ -55,3 +55,33 @@ export async function createRequest(
     throw error;
   }
 }
+
+export async function updateRequest(
+  url: string,
+  body: unknown,
+  headers?: Record<string, string>
+) {
+  try {
+    const apiUrl = url.startsWith('/api') ? url : `/api${url}`;
+
+    const config: RequestInit = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+      body: JSON.stringify(body),
+    };
+
+    const response = await fetch(apiUrl, config);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Put error:', error);
+    throw error;
+  }
+}

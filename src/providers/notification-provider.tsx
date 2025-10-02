@@ -5,7 +5,10 @@ import { toast, Toaster } from 'sonner';
 
 interface NotificationContextType {
   notifySuccess: (message: string, description?: string) => void;
-  notifyError: (message: string, description?: string) => void;
+  notifyError: (
+    message: string,
+    description?: string | Error | unknown
+  ) => void;
   notifyInfo: (message: string, description?: string) => void;
 }
 
@@ -25,10 +28,23 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     });
   };
 
-  const notifyError = (message: string, description?: string) => {
-    console.error(message, description);
+  const notifyError = (
+    message: string,
+    description?: string | Error | unknown
+  ) => {
+    let errorMessage: string | undefined;
+
+    if (description instanceof Error) {
+      errorMessage = description.message;
+    } else if (typeof description === 'string') {
+      errorMessage = description;
+    } else if (description !== undefined && description !== null) {
+      errorMessage = String(description);
+    }
+
+    console.error(message, errorMessage);
     toast.error(message, {
-      description,
+      description: errorMessage,
       duration: 5000,
     });
   };

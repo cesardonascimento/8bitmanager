@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Game } from '@/db/repositories/game.repository';
 import { Platform } from '@/db/repositories/platform.repository';
 import { fetchRequest } from '@/lib/api/client';
 
@@ -24,18 +25,29 @@ export default function Page() {
   const { id } = useParams();
 
   const [platform, setPlatform] = useState<Platform | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [games, setGames] = useState<Game[]>([]);
+  const [loadingPlatform, setLoadingPlatform] = useState(true);
+  const [loadingGames, setLoadingGames] = useState(true);
 
   useEffect(() => {
     const fetchPlatform = async () => {
       const data = await fetchRequest(`/platforms/${id}`);
       setPlatform(data as Platform);
-      setLoading(false);
+      setLoadingPlatform(false);
     };
     fetchPlatform();
   }, [id]);
 
-  if (loading) {
+  useEffect(() => {
+    const fetchGames = async () => {
+      const data = await fetchRequest(`/games?platformId=${id}`);
+      setGames(data as Game[]);
+      setLoadingGames(false);
+    };
+    fetchGames();
+  }, [id]);
+
+  if (loadingPlatform || loadingGames) {
     return <PageLoader />;
   }
 
@@ -49,7 +61,7 @@ export default function Page() {
       <PageTitle platform={platform} />
       <div className="space-y-4">
         <PageNavigation platform={platform} />
-        <PageTable platform={platform} />
+        <PageTable platform={platform} games={games} />
       </div>
     </div>
   );
@@ -117,7 +129,13 @@ const PageNavigation = ({ platform }: { platform: Platform }) => {
   );
 };
 
-const PageTable = ({ platform }: { platform: Platform }) => {
+const PageTable = ({
+  platform,
+  games,
+}: {
+  platform: Platform;
+  games: Game[];
+}) => {
   return (
     <div className="flex flex-col gap-6 p-6 border rounded-md">
       <div className="space-y-1">
@@ -127,7 +145,7 @@ const PageTable = ({ platform }: { platform: Platform }) => {
           platform.
         </p>
       </div>
-      <GamesTable games={platform.games} platformId={platform.id} />
+      <GamesTable games={games} platformId={platform.id} />
     </div>
   );
 };

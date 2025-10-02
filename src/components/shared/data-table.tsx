@@ -78,19 +78,19 @@ export default function GamesTable<T>({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-center">
+        <div className="flex items-center gap-4 order-1 w-full">
           {filterKeys && (
             <Input
               placeholder={`Filter by ${filterKeys.join(', ')}...`}
               value={globalFilter}
               onChange={event => setGlobalFilter(event.target.value)}
-              className="w-sm"
+              className="w-full lg:w-md"
             />
           )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
+              <Button variant="outline">
                 Columns <ChevronDown />
               </Button>
             </DropdownMenuTrigger>
@@ -114,7 +114,9 @@ export default function GamesTable<T>({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div className="flex items-center gap-4">{customActions}</div>
+        <div className="flex items-center gap-4 order-2 lg:justify-end">
+          {customActions}
+        </div>
       </div>
       <div className="overflow-hidden border rounded-md">
         <Table>

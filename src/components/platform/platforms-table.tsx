@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Platform } from '@/db/repositories/platform.repository';
 import DataTable from '../shared/data-table';
+import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 
 export type PlatformsTableProps = {
@@ -79,7 +80,7 @@ export const columns: ColumnDef<Platform>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue('releasedGamesCount')}</div>
+      <Badge variant="outline">{`${row.getValue('releasedGamesCount')} games`}</Badge>
     ),
   },
   {
@@ -98,7 +99,7 @@ export const columns: ColumnDef<Platform>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue('collectionGamesCount')}</div>
+      <Badge variant="outline">{`${row.getValue('collectionGamesCount')} games`}</Badge>
     ),
   },
   {

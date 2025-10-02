@@ -45,7 +45,7 @@ BEGIN
     UPDATE game_lists 
     SET gamesCount = (
         SELECT COUNT(*) 
-        FROM json_each(NEW.content, '$')
+        FROM json_each(NEW.content)
     )
     WHERE id = NEW.id;
 END;
@@ -57,7 +57,20 @@ BEGIN
     UPDATE game_lists 
     SET gamesCount = (
         SELECT COUNT(*) 
-        FROM json_each(NEW.content, '$')
+        FROM json_each(NEW.content)
+    )
+    WHERE id = NEW.id;
+END;
+
+CREATE TRIGGER IF NOT EXISTS update_gamelist_found_games_count_insert
+AFTER INSERT ON game_lists
+BEGIN
+    UPDATE game_lists 
+    SET foundGamesCount = (
+        SELECT COUNT(*) 
+        FROM json_each(NEW.content)
+        WHERE json_extract(value, '$.releasedGameId') IS NOT NULL 
+        AND json_extract(value, '$.releasedGameId') != ''
     )
     WHERE id = NEW.id;
 END;

@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { asc, desc, eq } from 'drizzle-orm';
 import { db } from '../index';
 import { gameListsTable } from '../schema';
 
@@ -6,9 +6,17 @@ export type GameListInsert = typeof gameListsTable.$inferInsert;
 export type GameList = typeof gameListsTable.$inferSelect;
 
 export class GameListRepository {
-  static async list(platformId: string): Promise<GameList[]> {
+  static async list(
+    platformId: string,
+    orderBy: keyof typeof gameListsTable.$inferSelect = 'createdAt',
+    orderDirection: string = 'desc'
+  ): Promise<GameList[]> {
     return (await db.query.gameListsTable.findMany({
       where: eq(gameListsTable.platformId, platformId),
+      orderBy:
+        orderDirection === 'asc'
+          ? asc(gameListsTable[orderBy])
+          : desc(gameListsTable[orderBy]),
     })) as GameList[];
   }
 
@@ -20,7 +28,6 @@ export class GameListRepository {
   }
 
   static async create(gameList: GameListInsert): Promise<GameList> {
-    console.log('gameList', gameList);
     const result = await db.insert(gameListsTable).values(gameList).returning();
     return result[0] as GameList;
   }

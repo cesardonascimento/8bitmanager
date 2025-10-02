@@ -1,11 +1,9 @@
 import { eq, asc, desc } from 'drizzle-orm';
 import { db } from '../index';
-import { platformsTable, gamesTable } from '../schema';
+import { platformsTable } from '../schema';
 
 export type PlatformInsert = typeof platformsTable.$inferInsert;
-export type Platform = typeof platformsTable.$inferSelect & {
-  games: Array<typeof gamesTable.$inferSelect>;
-};
+export type Platform = typeof platformsTable.$inferSelect;
 
 export class PlatformRepository {
   static async list(
@@ -13,9 +11,6 @@ export class PlatformRepository {
     orderDirection: string = 'asc'
   ): Promise<Platform[]> {
     return (await db.query.platformsTable.findMany({
-      with: {
-        games: true,
-      },
       orderBy:
         orderDirection === 'asc'
           ? asc(platformsTable[orderBy])
@@ -26,9 +21,6 @@ export class PlatformRepository {
   static async fetch(id: string): Promise<Platform | null> {
     const result = await db.query.platformsTable.findFirst({
       where: eq(platformsTable.id, id),
-      with: {
-        games: true,
-      },
     });
 
     return result || null;
