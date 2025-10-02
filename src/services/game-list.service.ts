@@ -53,7 +53,6 @@ export const selectCandidate = async (
   contentItemId: string,
   releasedGameId: string
 ) => {
-  console.log('selectCandidate', gameList.id, contentItemId, releasedGameId);
   const game = await GameRepository.fetch(releasedGameId);
 
   if (!game) {

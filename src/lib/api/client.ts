@@ -85,3 +85,31 @@ export async function updateRequest(
     throw error;
   }
 }
+
+export async function deleteRequest(
+  url: string,
+  headers?: Record<string, string>
+) {
+  try {
+    const apiUrl = url.startsWith('/api') ? url : `/api${url}`;
+
+    const config: RequestInit = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+    };
+
+    const response = await fetch(apiUrl, config);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Delete error:', error);
+    throw error;
+  }
+}

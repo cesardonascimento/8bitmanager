@@ -169,8 +169,11 @@ const PageTable = ({
   return (
     <div className="flex flex-col gap-6 p-6 border rounded-md">
       <div className="space-y-1">
-        <h2 className="text-2xl font-bold">CHANGE THIS TITLE</h2>
-        <p className="text-muted-foreground">CHANGE THIS DESCRIPTION</p>
+        <h2 className="text-2xl font-bold">Game list content</h2>
+        <p className="text-muted-foreground">
+          Manualy select the games that could not be automatically matched to a
+          released game
+        </p>
       </div>
       <GameListContentTable gameList={gameList} games={games} />
     </div>

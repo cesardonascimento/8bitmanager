@@ -1,14 +1,16 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, Goal } from 'lucide-react';
+import { ArrowUpDown, Goal, Plus, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { GameList } from '@/db/repositories/game-list.repository';
 import { Game } from '@/db/repositories/game.repository';
 import { GameListContentItem } from '@/db/schema';
-import { updateRequest } from '@/lib/api/client';
+import { createRequest, deleteRequest, updateRequest } from '@/lib/api/client';
+import { normalizeTitle } from '@/lib/games/utils';
 import DataTable from '../shared/data-table';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
+import FindMatchingGameDialog from './find-matching-game-dialog';
 
 export type GameListContentTableProps = {
   gameList: GameList;
@@ -17,10 +19,13 @@ export type GameListContentTableProps = {
 
 export default function GameListContentTable({
   gameList: initialGameList,
-  games,
+  games: initialGames,
 }: GameListContentTableProps) {
   const [gameList, setGameList] = useState<GameList>(initialGameList);
-  const [loadingSetCandidates, setLoadingSetCandidates] = useState(false);
+  const [games, setGames] = useState<Game[]>(initialGames);
+  const [loadingAction, setLoadingAction] = useState(false);
+  const [selectedContentItem, setSelectedContentItem] =
+    useState<GameListContentItem | null>(null);
 
   const mappedGames = games.reduce(
     (acc, game) => ({
@@ -34,15 +39,51 @@ export default function GameListContentTable({
     contentItemId: string,
     releasedGameId: string
   ) => {
-    setLoadingSetCandidates(true);
-    const updatedContent = await updateRequest(
+    setLoadingAction(true);
+    const updatedGameList = await updateRequest(
       `/game-lists/${gameList.id}/content/${contentItemId}`,
       {
         releasedGameId,
       }
     );
-    setGameList(updatedContent as GameList);
-    setLoadingSetCandidates(false);
+    setGameList(updatedGameList as GameList);
+    setLoadingAction(false);
+    return updatedGameList as GameList;
+  };
+
+  const handleFindMatchingGame = async (contentItemId: string) => {
+    setSelectedContentItem(gameList.content[contentItemId]);
+  };
+
+  const handleAddToPlatform = async (contentItemId: string) => {
+    setLoadingAction(true);
+    const contentItem = gameList.content[contentItemId];
+    const createdGame = await createRequest(`/games`, {
+      platformId: gameList.platformId,
+      inCollection: true,
+      origin: 'manual',
+      title: contentItem.title,
+      titleVariants: [],
+      titleNormalized: normalizeTitle(contentItem.title),
+    });
+
+    const updatedGameList = await handleSelectCandidate(
+      contentItemId,
+      createdGame.id
+    );
+
+    setGames(prevGames => [...prevGames, createdGame]);
+    setGameList(updatedGameList as GameList);
+    setLoadingAction(false);
+  };
+
+  const handleRemoveFromGameList = async (contentItemId: string) => {
+    setLoadingAction(true);
+    const updatedGameList = await deleteRequest(
+      `/game-lists/${gameList.id}/content/${contentItemId}`
+    );
+    setGameList(updatedGameList as GameList);
+    setLoadingAction(false);
   };
 
   const columns: ColumnDef<GameListContentItem>[] = [
@@ -160,17 +201,17 @@ export default function GameListContentTable({
 
         if (!releasedGameId) {
           return (
-            <div className="flex flex-col gap-4">
+            <div className="flex gap-4 flex-wrap">
               {releasedGameCandidates.map(candidate => {
                 const game = mappedGames[candidate];
 
                 return (
                   <Button
-                    disabled={loadingSetCandidates}
+                    disabled={loadingAction}
                     size="sm"
                     className="cursor-pointer w-fit"
                     key={candidate}
-                    variant="secondary"
+                    variant="outline"
                     onClick={() =>
                       handleSelectCandidate(row.getValue('id'), candidate)
                     }
@@ -185,13 +226,67 @@ export default function GameListContentTable({
         }
       },
     },
+    {
+      accessorKey: 'actions',
+      header: ({}) => 'Actions',
+      cell: ({ row }) => {
+        if (row.getValue('releasedGameId')) {
+          return (
+            <Button
+              disabled={loadingAction}
+              variant="outline"
+              className="cursor-pointer w-fit"
+              size="sm"
+              onClick={() => handleRemoveFromGameList(row.getValue('id'))}
+            >
+              <Trash2 className="text-destructive" />
+              Remove
+            </Button>
+          );
+        }
+
+        return (
+          <div className="flex gap-2">
+            <Button
+              disabled={loadingAction}
+              variant="outline"
+              className="cursor-pointer w-fit"
+              size="sm"
+              onClick={() => handleFindMatchingGame(row.getValue('id'))}
+            >
+              <Search />
+              Find
+            </Button>
+            <Button
+              disabled={loadingAction}
+              variant="outline"
+              className="cursor-pointer w-fit"
+              size="sm"
+              onClick={() => handleAddToPlatform(row.getValue('id'))}
+            >
+              <Plus />
+              Add
+            </Button>
+          </div>
+        );
+      },
+    },
   ];
 
   return (
-    <DataTable
-      columns={columns}
-      data={Object.values(gameList.content)}
-      filterKeys={['id']}
-    />
+    <>
+      <DataTable
+        columns={columns}
+        data={Object.values(gameList.content)}
+        filterKeys={['id']}
+      />
+      {selectedContentItem && (
+        <FindMatchingGameDialog
+          contentItem={selectedContentItem as GameListContentItem}
+          onClose={() => setSelectedContentItem(null)}
+          games={games}
+        />
+      )}
+    </>
   );
 }

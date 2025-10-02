@@ -1,4 +1,5 @@
 import { GameListRepository } from '@/db/repositories/game-list.repository';
+import { GameRepository } from '@/db/repositories/game.repository';
 import {
   respondBadRequest,
   respondError,
@@ -25,14 +26,48 @@ export async function PUT(
       return respondNotFound();
     }
 
-    const updatedContent = await selectCandidate(
+    const updatedGameList = await selectCandidate(
       gameList,
       contentItemId,
       releasedGameId
     );
 
-    return respondSuccess(updatedContent);
+    return respondSuccess(updatedGameList);
   } catch (error) {
     return respondError(error);
   }
+}
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string; contentItemId: string }> }
+) {
+  const { id, contentItemId } = await params;
+
+  const gameList = await GameListRepository.fetch(id);
+
+  if (!gameList) {
+    return respondNotFound();
+  }
+
+  const contentItem = gameList.content[contentItemId];
+
+  if (!contentItem) {
+    return respondNotFound();
+  }
+
+  await GameRepository.update(contentItem.releasedGameId as string, {
+    inCollection: false,
+  });
+
+  const updatedContent = {
+    ...gameList.content,
+    [contentItemId]: { ...contentItem, releasedGameId: '' },
+  };
+
+  const updatedGameList = await GameListRepository.update(gameList.id, {
+    content: updatedContent,
+  });
+
+  return respondSuccess(updatedGameList);
 }
