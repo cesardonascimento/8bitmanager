@@ -284,6 +284,10 @@ export default function GameListContentTable({
         <FindMatchingGameDialog
           contentItem={selectedContentItem as GameListContentItem}
           onClose={() => setSelectedContentItem(null)}
+          onUpdate={(contentItemId, releasedGameId) => {
+            setSelectedContentItem(null);
+            handleSelectCandidate(contentItemId, releasedGameId);
+          }}
           games={games}
         />
       )}
