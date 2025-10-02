@@ -66,18 +66,6 @@ export default function Page() {
     notFound();
   }
 
-  // TODO:
-  // ✅ Migrar list de gamelists para uma página (talvez mudar de tabs para buttons)
-  // Criar botões de ação na tabela de jogos
-  // Redirecionar para a tela de detalhes da importação após o upload do arquivo
-  // Criar ação de selecionar candidatos
-  // Criar ação de escolher manualmente
-  // Criar ação de adicionar jogo na lista a partir da lista importada
-  // Adicionar coluna de origem na tabela de jogos
-  // Corrigir uploadedAt
-  // Adicionar informações da plataforma na tela de detalhes de importação
-  // Criar tabela de jogos importados (content da gamelist)
-
   return (
     <div className="space-y-8">
       <PageBreadcrumb gameList={gameList} platform={platform} />

@@ -27,9 +27,8 @@ export class GameRepository {
     return result || null;
   }
 
-  static async create(game: GameInsert): Promise<Game> {
-    const result = await db.insert(gamesTable).values(game).returning();
-    return result[0] as Game;
+  static async createMany(games: GameInsert[]): Promise<Game[]> {
+    return await db.insert(gamesTable).values(games).returning();
   }
 
   static async update(

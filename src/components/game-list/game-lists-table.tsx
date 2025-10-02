@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox';
 import { GameList } from '@/db/repositories/game-list.repository';
 import DataTable from '../shared/data-table';
+import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import FileImportDialog from './file-import-dialog';
 
@@ -85,8 +86,50 @@ export const columns: ColumnDef<GameList>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue('gamesCount')}</div>
+      <div className="text-center">
+        <Badge variant="outline">{`${row.getValue('gamesCount')} games`}</Badge>
+      </div>
     ),
+  },
+  {
+    accessorKey: 'foundGamesCount',
+    header: () => null,
+    cell: () => null,
+    enableHiding: false,
+    enableSorting: false,
+    enableColumnFilter: false,
+    meta: {
+      isHidden: true,
+    },
+  },
+  {
+    accessorKey: 'missingGamesCount',
+    header: ({ column }) => {
+      return (
+        <div className="text-center">
+          <Button
+            variant="link"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Missing games count
+            <ArrowUpDown />
+          </Button>
+        </div>
+      );
+    },
+    cell: ({ row }) => {
+      const missingGamesCount =
+        (row.getValue('gamesCount') as number) -
+        (row.getValue('foundGamesCount') as number);
+
+      return (
+        <div className="text-center">
+          <Badge variant={missingGamesCount > 0 ? 'destructive' : 'outline'}>
+            {missingGamesCount} games
+          </Badge>
+        </div>
+      );
+    },
   },
   {
     id: 'actions',

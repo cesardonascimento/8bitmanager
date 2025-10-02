@@ -22,7 +22,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const game = await request.json();
-  const createdGame = await GameRepository.create(game);
-  return respondSuccess(createdGame);
+  const games = await request.json();
+  const createdGames = await GameRepository.createMany(games);
+  return respondSuccess(createdGames);
 }

@@ -58,7 +58,7 @@ export default function GameListContentTable({
   const handleAddToPlatform = async (contentItemId: string) => {
     setLoadingAction(true);
     const contentItem = gameList.content[contentItemId];
-    const createdGame = await createRequest(`/games`, {
+    const createdGames = await createRequest(`/games`, {
       platformId: gameList.platformId,
       inCollection: true,
       origin: 'manual',
@@ -69,10 +69,10 @@ export default function GameListContentTable({
 
     const updatedGameList = await handleSelectCandidate(
       contentItemId,
-      createdGame.id
+      createdGames[0].id
     );
 
-    setGames(prevGames => [...prevGames, createdGame]);
+    setGames(prevGames => [...prevGames, ...createdGames]);
     setGameList(updatedGameList as GameList);
     setLoadingAction(false);
   };
