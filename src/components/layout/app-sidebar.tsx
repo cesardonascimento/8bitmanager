@@ -54,7 +54,7 @@ export async function AppSidebar() {
                           <SidebarMenuSubButton asChild>
                             <Link href={subItem.url}>
                               <subItem.icon />
-                              <span>{subItem.title}</span>
+                              <span className="truncate">{subItem.title}</span>
                               {subItem.isCompleted && <CheckCircle2 className="!text-green-500" />}
                             </Link>
                           </SidebarMenuSubButton>
