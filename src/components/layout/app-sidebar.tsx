@@ -1,4 +1,4 @@
-import { Joystick, Gamepad2 } from 'lucide-react';
+import { Joystick, Gamepad2, CheckCircle, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import {
   Sidebar,
@@ -27,6 +27,7 @@ export async function AppSidebar() {
         title: platform.name,
         url: `/platforms/${platform.id}`,
         icon: Gamepad2,
+        isCompleted: platform.releasedGamesCount > 0 && (platform.releasedGamesCount === platform.collectionGamesCount),
       })),
     },
   ];
@@ -54,6 +55,7 @@ export async function AppSidebar() {
                             <Link href={subItem.url}>
                               <subItem.icon />
                               <span>{subItem.title}</span>
+                              {subItem.isCompleted && <CheckCircle2 className="!text-green-500" />}
                             </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
