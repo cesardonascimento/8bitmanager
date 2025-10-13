@@ -105,6 +105,21 @@ export default function GamesTable({
       ),
     },
     {
+      accessorKey: 'origin',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="link"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Origin
+            <ArrowUpDown />
+          </Button>
+        );
+      },
+      cell: ({ row }) => <div>{row.getValue('origin')}</div>,
+    },
+    {
       accessorKey: 'titleNormalized',
       header: ({ column }) => {
         return (

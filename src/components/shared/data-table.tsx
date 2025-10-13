@@ -29,6 +29,7 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { Input } from '../ui/input';
+// import pcengineGames from '@/db/seeds/games/pc-engine.json';
 
 export type DataTableProps<T> = {
   columns: ColumnDef<T>[];
@@ -75,6 +76,9 @@ export default function GamesTable<T>({
       globalFilter,
     },
   });
+  
+  // console.log(data.filter(game => !pcengineGames.some(d => d[0] === game.title)));
+  // console.log(pcengineGames.filter(game => !data.some(d => d.title === game[0])));
 
   return (
     <div className="flex flex-col gap-4">

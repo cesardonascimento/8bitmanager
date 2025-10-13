@@ -196,7 +196,7 @@ export default function GameListContentTable({
 
         if (releasedGameId) {
           const game = mappedGames[releasedGameId];
-          return <div>{game.title}</div>;
+          return <div>{game?.title}</div>;
         }
 
         if (!releasedGameId) {
@@ -217,7 +217,7 @@ export default function GameListContentTable({
                     }
                   >
                     <Goal />
-                    {game.title}
+                    {game?.title}
                   </Button>
                 );
               })}
