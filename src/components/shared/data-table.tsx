@@ -65,7 +65,7 @@ export default function GamesTable<T>({
     globalFilterFn: 'includesString',
     initialState: {
       pagination: {
-        pageSize: 50,
+        pageSize: 300,
       },
     },
     state: {
